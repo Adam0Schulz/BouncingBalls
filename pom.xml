@@ -60,7 +60,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.balls.bouncingballs/com.balls.bouncingballs.HelloApplication</mainClass>
+                            <mainClass>com.balls.bouncingballs/com.balls.bouncingballs.App</mainClass>
                         </configuration>
                     </execution>
                 </executions>
