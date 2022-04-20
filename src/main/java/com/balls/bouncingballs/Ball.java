@@ -40,7 +40,7 @@ public class Ball extends Thread {
         return circle;
     }
 
-    public void move() {
+    public synchronized void move() {
         if(circle.getCenterX() >= 600 - circle.getRadius() || circle.getCenterX() <= 0) {
             direction[0] *= -1;
         }
@@ -52,7 +52,7 @@ public class Ball extends Thread {
         updateCoords();
     }
 
-    public void run(String greeting) {
+    public void run() {
         while(true) {
             move();
             try {
