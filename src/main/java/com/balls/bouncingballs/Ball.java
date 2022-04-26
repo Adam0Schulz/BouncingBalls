@@ -14,15 +14,20 @@ public class Ball extends Thread {
     private int[] direction;
     private Circle circle;
     private Random random = new Random();
+    private String[] possibleColors = new String[]{"#ff0000", "#00ff00", "#0000ff", "#000000", "#ffff00", "#00ffff", "#ff00ff"};
 
     public Ball() {
-        circle = new Circle(random.nextInt(300), random.nextInt(300), random.nextInt(10) + 10);
-        circle.setFill(Paint.valueOf("#ff0000"));
+        int radius = random.nextInt(10) + 10;
+        int x = random.nextInt(300);
+        int y = random.nextInt(300);
+        circle = new Circle(x, y, radius);
+
+        circle.setFill(Paint.valueOf(possibleColors[random.nextInt(7)]));
         direction = new int[]{random.nextInt(10), random.nextInt(10)};
         updateCoords();
     }
 
-    public Ball(int radius) {
+    /*public Ball(int radius) {
         circle = new Circle(random.nextInt(300), random.nextInt(300), radius);
         circle.setFill(Paint.valueOf("#ff0000"));
         direction = new int[]{random.nextInt(10), random.nextInt(10)};
@@ -39,7 +44,7 @@ public class Ball extends Thread {
         circle = new Circle(x, y, radius);
         this.direction = direction;
         updateCoords();
-    }
+    }*/
 
     public void updateCoords() {
         AnchorPane.setTopAnchor(circle, circle.getCenterY());
@@ -70,14 +75,8 @@ public class Ball extends Thread {
         for(Ball ball : balls) {
 
             if(ball.getCircle().intersects(circle.getCenterX(), circle.getCenterY(), circle.getRadius(), circle.getRadius())) {
-
-                double sizeDiff = ball.getCircle().getRadius() / circle.getRadius();
-
                 int[] newDirection = new int[2];
                 newDirection = ball.getDirection();
-                for (int i : newDirection) {
-                    i *= sizeDiff;
-                }
                 ball.setDirection(getDirection());
                 setDirection(newDirection);
             }
