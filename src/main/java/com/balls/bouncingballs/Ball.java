@@ -4,16 +4,26 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Ball extends Thread {
 
+    private ArrayList<Ball> balls = new ArrayList<Ball>();
     private int[] direction;
     private Circle circle;
     private Random random = new Random();
 
     public Ball() {
         circle = new Circle(random.nextInt(300), random.nextInt(300), random.nextInt(10) + 10);
+        circle.setFill(Paint.valueOf("#ff0000"));
+        direction = new int[]{random.nextInt(10), random.nextInt(10)};
+        updateCoords();
+    }
+
+    public Ball(int radius) {
+        circle = new Circle(random.nextInt(300), random.nextInt(300), radius);
         circle.setFill(Paint.valueOf("#ff0000"));
         direction = new int[]{random.nextInt(10), random.nextInt(10)};
         updateCoords();
@@ -40,7 +50,38 @@ public class Ball extends Thread {
         return circle;
     }
 
+    public void setBalls(Ball[] balls) {
+        this.balls.addAll(List.of(balls));
+    }
+
+    public void addBall(Ball ball) {
+        this.balls.add(ball);
+    }
+
+    public int[] getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int[] direction) {
+        this.direction = direction;
+    }
+
     public synchronized void move() {
+        for(Ball ball : balls) {
+
+            if(ball.getCircle().intersects(circle.getCenterX(), circle.getCenterY(), circle.getRadius(), circle.getRadius())) {
+
+                double sizeDiff = ball.getCircle().getRadius() / circle.getRadius();
+
+                int[] newDirection = new int[2];
+                newDirection = ball.getDirection();
+                for (int i : newDirection) {
+                    i *= sizeDiff;
+                }
+                ball.setDirection(getDirection());
+                setDirection(newDirection);
+            }
+        }
         if(circle.getCenterX() >= 600 - circle.getRadius() || circle.getCenterX() <= 0) {
             direction[0] *= -1;
         }
@@ -53,14 +94,19 @@ public class Ball extends Thread {
     }
 
     public void run() {
+        //
+        //noinspection InfiniteLoopStatement
         while(true) {
-            move();
+
             try {
-                sleep(40);
+                move();
+                sleep(50);
+                System.out.println("this is just a random text");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
         }
+
     }
 }
