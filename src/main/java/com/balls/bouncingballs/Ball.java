@@ -14,16 +14,16 @@ public class Ball extends Thread {
     private int[] direction;
     private Circle circle;
     private Random random = new Random();
-    private String[] possibleColors = new String[]{"#ff0000", "#00ff00", "#0000ff", "#000000", "#ffff00", "#00ffff", "#ff00ff"};
+    private String[] possibleColors = new String[]{"#ff0000", "#00ff00", "#000000", "#00ffff", "#ff00ff"};
 
     public Ball() {
-        int radius = random.nextInt(10) + 10;
-        int x = random.nextInt(300);
-        int y = random.nextInt(300);
+        int radius = random.nextInt(50) + 100;
+        int x = random.nextInt(1920);
+        int y = random.nextInt(1080);
         circle = new Circle(x, y, radius);
 
-        circle.setFill(Paint.valueOf(possibleColors[random.nextInt(7)]));
-        direction = new int[]{random.nextInt(10), random.nextInt(10)};
+        circle.setFill(Paint.valueOf(possibleColors[random.nextInt(5)]));
+        direction = new int[]{random.nextInt(20), random.nextInt(20)};
         updateCoords();
     }
 
@@ -81,10 +81,10 @@ public class Ball extends Thread {
                 setDirection(newDirection);
             }
         }
-        if(circle.getCenterX() >= 600 - circle.getRadius() || circle.getCenterX() <= 0) {
+        if(circle.getCenterX() >= 1920 - circle.getRadius() || circle.getCenterX() <= 0) {
             direction[0] *= -1;
         }
-        if(circle.getCenterY() >= 400 - circle.getRadius() || circle.getCenterY() <= 0) {
+        if(circle.getCenterY() >= 1080 - circle.getRadius() || circle.getCenterY() <= 0) {
             direction[1] *= -1;
         }
         circle.setCenterX(circle.getCenterX() + direction[0]);
@@ -93,13 +93,12 @@ public class Ball extends Thread {
     }
 
     public void run() {
-        //
+
         //noinspection InfiniteLoopStatement
         while(true) {
-
             try {
                 move();
-                sleep(50);
+                sleep(80);
                 System.out.println("this is just a random text");
             } catch (InterruptedException e) {
                 e.printStackTrace();

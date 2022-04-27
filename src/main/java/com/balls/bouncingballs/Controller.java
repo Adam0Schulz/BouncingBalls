@@ -20,7 +20,7 @@ public class Controller {
         adamsBall.setBalls(new Ball[]{simonasBall, adamsBallOne});
         simonasBall.setBalls(new Ball[]{adamsBall, adamsBallOne});
         adamsBallOne.setBalls(new Ball[]{simonasBall, adamsBall});
-        //simonasBallTwo.setBalls(new Ball[]{adamsBall, simonasBall, adamsBallOne});
+        /*simonasBallTwo.setBalls(new Ball[]{adamsBall, simonasBall, adamsBallOne});*/
 
         scene.getChildren().add(adamsBall.getCircle());
         scene.getChildren().add(simonasBall.getCircle());
