@@ -1,14 +1,23 @@
 package com.balls.bouncingballs;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Ball extends Thread {
+
+    private static final Object lock = new Object();
 
     private ArrayList<Ball> balls = new ArrayList<Ball>();
     private int[] direction;
@@ -17,7 +26,7 @@ public class Ball extends Thread {
     private String[] possibleColors = new String[]{"#ff0000", "#00ff00", "#000000", "#00ffff", "#ff00ff"};
 
     public Ball() {
-        int radius = random.nextInt(50) + 100;
+        int radius = random.nextInt(50) + 50;
         int x = random.nextInt(1920);
         int y = random.nextInt(1080);
         circle = new Circle(x, y, radius);
@@ -55,8 +64,8 @@ public class Ball extends Thread {
         return circle;
     }
 
-    public void setBalls(Ball[] balls) {
-        this.balls.addAll(List.of(balls));
+    public void setBalls(ArrayList<Ball> balls) {
+        this.balls.addAll(balls);
     }
 
     public void addBall(Ball ball) {
@@ -71,10 +80,25 @@ public class Ball extends Thread {
         this.direction = direction;
     }
 
+    public boolean checkColision(Ball ballOne, Ball ballTwo) {
+        double deltaX = Math.abs(ballOne.getCircle().getCenterX() - ballTwo.getCircle().getCenterX());
+        double deltaY = Math.abs(ballOne.getCircle().getCenterY() - ballTwo.getCircle().getCenterY());
+
+        double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+        double radiusSum = ballOne.getCircle().getRadius() + ballTwo.getCircle().getRadius();
+
+        if(distance < radiusSum) {
+            return true;
+        }
+
+        return false;
+    }
+
     public synchronized void move() {
         for(Ball ball : balls) {
 
-            if(ball.getCircle().intersects(circle.getCenterX(), circle.getCenterY(), circle.getRadius(), circle.getRadius())) {
+            if(checkColision(ball, this)) {
                 int[] newDirection = new int[2];
                 newDirection = ball.getDirection();
                 ball.setDirection(getDirection());
@@ -93,18 +117,18 @@ public class Ball extends Thread {
     }
 
     public void run() {
+        Platform.runLater(() -> {
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), new EventHandler<ActionEvent>() {
 
-        //noinspection InfiniteLoopStatement
-        while(true) {
-            try {
-                move();
-                sleep(80);
-                System.out.println("this is just a random text");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    move();
+                }
+            }));
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.play();
+        });
 
-        }
 
     }
 }
